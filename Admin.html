@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXTO DEALS - Admin Portal</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #f0f4f9; --bg-surface: #ffffff; --bg-card: #ffffff;
+      --text-main: #0f172a; --text-muted: #64748b; --border-color: #cbd5e1;
+      --primary: #2563eb; --accent-green: #059669; --accent-red: #dc2626; --accent-orange: #ea580c;
+      --shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.1); --border-radius: 18px;
+    }
+    body.dark-mode {
+      --bg-primary: #0b1329; --bg-surface: #131f37; --bg-card: #182642;
+      --text-main: #f1f5f9; --text-muted: #94a3b8; --border-color: #243452;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: var(--bg-primary); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+    header { background: var(--bg-surface); border-bottom: 1px solid var(--border-color); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-size: 1.4rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .brand span { color: var(--accent-orange); }
+    .brand-subtext { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; display: block; }
+    main { flex: 1; max-width: 900px; width: 100%; margin: 0 auto; padding: 20px; }
+    .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--border-radius); padding: 24px; box-shadow: var(--shadow); margin-bottom: 24px; }
+    .screen-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+    .screen-title { font-size: 1.3rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+    .form-group { margin-bottom: 18px; text-align: left; }
+    .form-group label { display: block; font-size: 0.88rem; font-weight: 700; margin-bottom: 8px; color: var(--text-muted); }
+    .form-control { width: 100%; padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main); font-size: 0.98rem; outline: none; }
+    .btn { width: 100%; padding: 14px 20px; border-radius: 12px; border: none; font-weight: 700; font-size: 1.02rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent-green) 0%, #047857 100%); color: white; }
+    .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); width: auto; padding: 8px 14px; font-size: 0.88rem; }
+    .btn-success { background: var(--accent-green); color: white; padding: 8px 14px; font-size: 0.88rem; border-radius: 8px; border: none; cursor: pointer; }
+    .btn-danger { background: var(--accent-red); color: white; padding: 8px 14px; font-size: 0.88rem; border-radius: 8px; border: none; cursor: pointer; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="brand">
+      <i class="fas fa-boxes-packing"></i>
+      <div>NEXTO <span>DEALS</span><span class="brand-subtext">Admin Portal</span></div>
+    </a>
+    <a href="index.html" class="btn btn-outline"><i class="fas fa-home"></i> Home</a>
+  </header>
+
+  <main>
+    <!-- LOGIN SCREEN -->
+    <div id="adminLoginScreen" class="card">
+      <div class="screen-header">
+        <div class="screen-title"><i class="fas fa-user-shield" style="color:var(--accent-green);"></i> Admin Login</div>
+      </div>
+      <form onsubmit="handleAdminLogin(event)">
+        <div class="form-group"><label>Admin ID</label><input type="text" id="adminId" class="form-control" required placeholder="admin"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="adminPass" class="form-control" required placeholder="admin123"></div>
+        <button type="submit" class="btn btn-primary">Access Admin Panel</button>
+      </form>
+    </div>
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="adminDashScreen" class="card hidden">
+      <div class="screen-header">
+        <div class="screen-title"><i class="fas fa-shield-halved" style="color: var(--accent-green);"></i> Admin Dashboard</div>
+        <button class="btn btn-outline" onclick="logout()"><i class="fas fa-right-from-bracket"></i> Logout</button>
+      </div>
+      <h3 style="font-size: 1.05rem; margin-bottom: 14px;">Pending Business Licence Approvals</h3>
+      <div id="adminApprovalList"></div>
+    </div>
+  </main>
+
+  <script>
+    let businesses = JSON.parse(localStorage.getItem('nexto_businesses')) || [];
+
+    function handleAdminLogin(e) {
+      e.preventDefault();
+      if (document.getElementById('adminId').value === 'admin' && document.getElementById('adminPass').value === 'admin123') {
+        document.getElementById('adminLoginScreen').classList.add('hidden');
+        document.getElementById('adminDashScreen').classList.remove('hidden');
+        renderApprovals();
+      } else {
+        alert('Invalid Admin Credentials! Use admin / admin123');
+      }
+    }
+
+    function renderApprovals() {
+      const list = document.getElementById('adminApprovalList');
+      list.innerHTML = '';
+      if (businesses.length === 0) {
+        list.innerHTML = '<p style="color: var(--text-muted);">No shop applications submitted yet.</p>';
+        return;
+      }
+      businesses.forEach(acc => {
+        list.innerHTML += `
+          <div class="card" style="padding: 16px; margin-bottom: 12px; background: var(--bg-primary);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong>${acc.shopName}</strong> (${acc.ownerName})
+                <div style="font-size:0.8rem; color:var(--text-muted);">${acc.category} - ${acc.district} (${acc.pincode})</div>
+              </div>
+              <div>${acc.approved ? '<span style="color:var(--accent-green); font-weight:700;">Approved</span>' : '<span style="color:var(--accent-orange); font-weight:700;">Pending</span>'}</div>
+            </div>
+            ${!acc.approved ? `
+              <div style="display:flex; gap:10px; margin-top:12px;">
+                <button class="btn-success" onclick="approveBiz('${acc.id}')">Approve Licence</button>
+                <button class="btn-danger" onclick="rejectBiz('${acc.id}')">Reject</button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+    }
+
+    function approveBiz(id) {
+      businesses = businesses.map(b => b.id === id ? { ...b, approved: true } : b);
+      localStorage.setItem('nexto_businesses', JSON.stringify(businesses));
+      renderApprovals();
+      alert('Licence approved successfully!');
+    }
+
+    function rejectBiz(id) {
+      businesses = businesses.filter(b => b.id !== id);
+      localStorage.setItem('nexto_businesses', JSON.stringify(businesses));
+      renderApprovals();
+    }
+
+    function logout() {
+      document.getElementById('adminDashScreen').classList.add('hidden');
+      document.getElementById('adminLoginScreen').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>

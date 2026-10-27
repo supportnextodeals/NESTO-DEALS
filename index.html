@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXTO DEALS - Home Page</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #f0f4f9; --bg-surface: #ffffff; --bg-card: #ffffff;
+      --text-main: #0f172a; --text-muted: #64748b; --border-color: #cbd5e1;
+      --primary: #2563eb; --primary-hover: #1d4ed8;
+      --primary-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      --accent-green: #059669; --accent-red: #dc2626; --accent-orange: #ea580c;
+      --shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      --border-radius: 18px;
+    }
+    body.dark-mode {
+      --bg-primary: #0b1329; --bg-surface: #131f37; --bg-card: #182642;
+      --text-main: #f1f5f9; --text-muted: #94a3b8; --border-color: #243452;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: var(--bg-primary); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+    header { background: var(--bg-surface); border-bottom: 1px solid var(--border-color); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-size: 1.4rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 10px; cursor: pointer; text-decoration: none; }
+    .brand span { color: var(--accent-orange); }
+    .brand-subtext { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; display: block; }
+    main { flex: 1; max-width: 900px; width: 100%; margin: 0 auto; padding: 20px; }
+    .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--border-radius); padding: 24px; box-shadow: var(--shadow); margin-bottom: 24px; }
+    .role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin-top: 24px; }
+    .role-card { background: var(--bg-card); border: 2px solid var(--border-color); border-radius: var(--border-radius); padding: 28px 18px; text-align: center; text-decoration: none; color: inherit; display: block; transition: 0.25s; }
+    .role-card:hover { border-color: var(--primary); transform: translateY(-4px); }
+    .role-icon-box { width: 70px; height: 70px; border-radius: 20px; margin: 0 auto 16px auto; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; }
+    .role-icon-customer { background: rgba(37, 99, 235, 0.12); color: var(--primary); }
+    .role-icon-business { background: rgba(234, 88, 12, 0.12); color: var(--accent-orange); }
+    .role-icon-admin { background: rgba(5, 150, 105, 0.12); color: var(--accent-green); }
+    .theme-toggle { background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-main); width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="brand">
+      <i class="fas fa-boxes-packing"></i>
+      <div>NEXTO <span>DEALS</span><span class="brand-subtext">Discover More. Save More.</span></div>
+    </a>
+    <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i></button>
+  </header>
+
+  <main>
+    <div class="card" style="text-align: center;">
+      <h2>Select Your Portal</h2>
+      <div style="font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-top: 4px;">Discover More. Save More.</div>
+      <p style="color: var(--text-muted); margin-top: 4px; font-size: 0.9rem;">Log in to explore or publish Factory-Packaged Deals</p>
+
+      <div class="role-grid">
+        <a href="Coustomer.html" class="role-card">
+          <div class="role-icon-box role-icon-customer"><i class="fas fa-user-tag"></i></div>
+          <h3>Customer Login</h3>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 6px;">Find near-expiry factory packaged deals near you</p>
+        </a>
+
+        <a href="Business.html" class="role-card">
+          <div class="role-icon-box role-icon-business"><i class="fas fa-store"></i></div>
+          <h3>Business Login</h3>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 6px;">List packaged stock & manage store offers</p>
+        </a>
+
+        <a href="Admin.html" class="role-card">
+          <div class="role-icon-box role-icon-admin"><i class="fas fa-user-shield"></i></div>
+          <h3>Admin Login</h3>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 6px;">Verify shop licences & monitor platform</p>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function toggleTheme() {
+      document.body.classList.toggle('dark-mode');
+      const icon = document.getElementById('themeIcon');
+      icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
+    }
+  </script>
+</body>
+</html>

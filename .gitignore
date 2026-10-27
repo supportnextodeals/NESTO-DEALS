@@ -1,0 +1,36 @@
+# .gitignore for NEXTO DEALS Django project
+# !! IMPORTANT: These files must NEVER be committed to Git !!
+
+# Environment / secrets
+.env
+.env.*
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Django
+*.log
+db.sqlite3
+staticfiles/
+media/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini

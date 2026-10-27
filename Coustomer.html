@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXTO DEALS - Customer Portal</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #f0f4f9; --bg-surface: #ffffff; --bg-card: #ffffff;
+      --text-main: #0f172a; --text-muted: #64748b; --border-color: #cbd5e1;
+      --primary: #2563eb; --primary-hover: #1d4ed8;
+      --primary-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      --accent-green: #059669; --accent-red: #dc2626; --accent-orange: #ea580c;
+      --shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.1); --border-radius: 18px;
+    }
+    body.dark-mode {
+      --bg-primary: #0b1329; --bg-surface: #131f37; --bg-card: #182642;
+      --text-main: #f1f5f9; --text-muted: #94a3b8; --border-color: #243452;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: var(--bg-primary); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 80px; }
+    header { background: var(--bg-surface); border-bottom: 1px solid var(--border-color); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .brand { font-size: 1.4rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .brand span { color: var(--accent-orange); }
+    .brand-subtext { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; display: block; }
+    main { flex: 1; max-width: 900px; width: 100%; margin: 0 auto; padding: 20px; }
+    .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--border-radius); padding: 24px; box-shadow: var(--shadow); margin-bottom: 24px; }
+    .screen-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+    .screen-title { font-size: 1.3rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+    .btn-back-link { background: none; border: none; color: var(--primary); font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .form-group { margin-bottom: 18px; text-align: left; }
+    .form-group label { display: block; font-size: 0.88rem; font-weight: 700; margin-bottom: 8px; color: var(--text-muted); }
+    .form-control { width: 100%; padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main); font-size: 0.98rem; outline: none; }
+    .btn { width: 100%; padding: 14px 20px; border-radius: 12px; border: none; font-weight: 700; font-size: 1.02rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .btn-primary { background: var(--primary-gradient); color: white; }
+    .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
+    .btn-sm { padding: 8px 14px; font-size: 0.88rem; width: auto; border-radius: 8px; }
+    .checkbox-group { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; font-size: 0.92rem; font-weight: 600; }
+    .checkbox-group input { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+    .product-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--border-radius); overflow: hidden; display: flex; flex-direction: column; }
+    .product-images { display: flex; height: 160px; background: #000; position: relative; }
+    .product-images img { width: 50%; height: 100%; object-fit: cover; border-right: 1px solid rgba(255,255,255,0.2); }
+    .image-label { position: absolute; bottom: 6px; background: rgba(0,0,0,0.75); color: #fff; font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; }
+    .label-front { left: 6px; } .label-back { right: 6px; }
+    .product-body { padding: 16px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .product-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 6px; }
+    .product-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
+    .price-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+    .mrp { text-decoration: line-through; color: var(--text-muted); font-size: 0.88rem; }
+    .discount-price { font-size: 1.3rem; font-weight: 800; color: var(--accent-green); }
+    .badge-expiry { background: rgba(220, 38, 38, 0.12); color: var(--accent-red); font-size: 0.78rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-surface); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); background: none; border: none; font-size: 0.75rem; font-weight: 600; cursor: pointer; width: 25%; }
+    .nav-item.active { color: var(--primary); font-weight: 800; }
+    .nav-item i { font-size: 1.25rem; }
+    .alert-box { padding: 14px; border-radius: 10px; font-size: 0.88rem; margin-bottom: 20px; display: flex; gap: 12px; align-items: flex-start; }
+    .alert-info { background: rgba(37, 99, 235, 0.1); color: var(--primary); border: 1px solid rgba(37, 99, 235, 0.25); }
+    .alert-warning { background: rgba(234, 88, 12, 0.1); color: var(--accent-orange); border: 1px solid rgba(234, 88, 12, 0.25); }
+    .terms-box-large { max-height: 480px; overflow-y: auto; padding: 20px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 12px; font-size: 0.92rem; line-height: 1.75; margin-bottom: 20px; }
+    .modal-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; z-index: 300; padding: 20px; }
+    .modal-content { background: var(--bg-card); border-radius: var(--border-radius); border: 1px solid var(--border-color); width: 100%; max-width: 500px; padding: 28px; position: relative; }
+    .modal-close { position: absolute; top: 18px; right: 18px; background: none; border: none; font-size: 1.3rem; color: var(--text-muted); cursor: pointer; }
+    .developer-card { background: var(--bg-primary); border: 1px dashed var(--primary); border-radius: 14px; padding: 20px; margin-top: 20px; }
+    .dev-photo-box { width: 100px; height: 120px; border: 2px dashed var(--border-color); border-radius: 10px; background: var(--bg-card); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.75rem; margin-bottom: 14px; }
+    .ad-contact-box { background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); border-radius: 8px; padding: 12px; font-size: 0.82rem; color: var(--text-muted); margin-top: 14px; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="brand">
+      <i class="fas fa-boxes-packing"></i>
+      <div>NEXTO <span>DEALS</span><span class="brand-subtext">Customer Portal</span></div>
+    </a>
+    <button class="btn btn-outline btn-sm" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i></button>
+  </header>
+
+  <main>
+    <!-- 1. TERMS SCREEN -->
+    <div id="termsScreen" class="card">
+      <div class="screen-header">
+        <div class="screen-title"><i class="fas fa-file-contract" style="color:var(--primary);"></i> Terms & Conditions</div>
+        <a href="index.html" class="btn-back-link"><i class="fas fa-arrow-left"></i> Home</a>
+      </div>
+      <div class="alert-box alert-warning">
+        <i class="fas fa-triangle-exclamation" style="font-size:1.3rem;"></i>
+        <div><strong>STRICT POLICY:</strong> Factory-packaged grocery & items only. Cooked food & medicines are prohibited.</div>
+      </div>
+      <div class="terms-box-large">
+        <h4>1. Inspection Mandate</h4><p>Customers must inspect the product seal and expiry date in person before payment.</p>
+        <h4>2. Scope Restriction</h4><p>Only company factory-packaged kitchen items are permitted.</p>
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="termsCheckbox" onchange="toggleTermsBtn()">
+        <label for="termsCheckbox">I accept the Terms & Conditions of NEXTO DEALS.</label>
+      </div>
+      <button id="acceptTermsBtn" class="btn btn-primary" disabled onclick="goToReg()">ACCEPT & CONTINUE <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <!-- 2. REGISTRATION SCREEN -->
+    <div id="custRegScreen" class="card hidden">
+      <div class="screen-header">
+        <div class="screen-title"><i class="fas fa-user-plus" style="color:var(--primary);"></i> Customer Registration</div>
+        <button class="btn-back-link" onclick="showScreen('termsScreen')"><i class="fas fa-arrow-left"></i> Back</button>
+      </div>
+      <form onsubmit="handleRegSubmit(event)">
+        <div class="form-group"><label>Full Name *</label><input type="text" id="custName" class="form-control" required placeholder="Rahul Sharma"></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="form-group"><label>State *</label><select id="custState" class="form-control" required onchange="populateDistricts()"><option value="">Select State</option></select></div>
+          <div class="form-group"><label>District *</label><select id="custDistrict" class="form-control" required><option value="">Select District</option></select></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="form-group"><label>City / Place *</label><input type="text" id="custPlace" class="form-control" required placeholder="Edappally"></div>
+          <div class="form-group"><label>Pincode *</label><input type="text" id="custPincode" class="form-control" required placeholder="682024"></div>
+        </div>
+        <div class="form-group"><label>Phone Number *</label><input type="tel" id="custPhone" class="form-control" required placeholder="10-digit Number"></div>
+        <div class="form-group"><label>Email Address *</label><input type="email" id="custEmail" class="form-control" required placeholder="name@domain.com"></div>
+        <button type="submit" class="btn btn-primary">Verify Email & Register <i class="fas fa-key"></i></button>
+      </form>
+    </div>
+
+    <!-- 3. OTP SCREEN -->
+    <div id="otpScreen" class="card hidden" style="text-align: center;">
+      <div class="screen-header">
+        <div class="screen-title">Security Verification</div>
+        <button class="btn-back-link" onclick="showScreen('custRegScreen')"><i class="fas fa-arrow-left"></i> Back</button>
+      </div>
+      <p style="color: var(--text-muted); margin-bottom: 24px;">Enter OTP code to continue. (Secret OTP: 0005)</p>
+      <form onsubmit="handleOtpSubmit(event)">
+        <div class="form-group" style="max-width: 260px; margin: 0 auto 24px auto;">
+          <input type="text" id="otpInput" class="form-control" style="text-align: center; font-size: 1.6rem; letter-spacing: 8px;" maxlength="4" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Verify Code & Proceed</button>
+      </form>
+    </div>
+
+    <!-- 4. CUSTOMER FEED SCREEN -->
+    <div id="customerFeedScreen" class="hidden">
+      <div class="card" style="padding: 16px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
+        <div><strong id="custFeedName" style="font-size:1.05rem;">User</strong><div style="font-size: 0.8rem; color: var(--text-muted);" id="custFeedLocation">Pincode: -</div></div>
+        <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
+      </div>
+      <div class="alert-box alert-info">
+        <i class="fas fa-info-circle"></i>
+        <div>Only Factory-Packaged Grocery & Kitchen Items listed. Inspect seals before purchase.</div>
+      </div>
+      <div id="customerProductGrid" class="product-grid"></div>
+    </div>
+
+    <!-- 5. RULES TAB -->
+    <div id="rulesTabScreen" class="card hidden">
+      <div class="screen-header"><div class="screen-title"><i class="fas fa-file-contract"></i> Rules & Policies</div></div>
+      <div class="terms-box-large">
+        <h4>1. Scope Mandate</h4><p>Only original factory-packaged grocery items allowed.</p>
+        <h4>2. Inspection</h4><p>Verify product seals and expiry dates in person.</p>
+      </div>
+    </div>
+
+    <!-- 6. SUPPORT TAB -->
+    <div id="supportTabScreen" class="card hidden" style="text-align: center;">
+      <div style="font-size: 3rem; color: var(--primary); margin-bottom: 16px;"><i class="fas fa-headset"></i></div>
+      <h2>Customer Support</h2>
+      <p style="color: var(--text-muted); margin: 16px 0;">Official Support Email: <strong>supportnextodeals@gmail.com</strong></p>
+    </div>
+
+    <!-- 7. DASHBOARD TAB -->
+    <div id="accountInfoScreen" class="card hidden">
+      <div class="screen-header"><div class="screen-title"><i class="fas fa-id-card"></i> User Dashboard</div></div>
+      <div id="accountDetailsBody"></div>
+      <div class="developer-card">
+        <h4 style="margin-bottom:12px; color:var(--primary);"><i class="fas fa-laptop-code"></i> Developer Profile</h4>
+        <div class="dev-photo-box"><i class="fas fa-user" style="font-size:2rem;"></i><span>Photo Box</span></div>
+        <p><strong>NAME:</strong> NIBIN SAJU</p>
+        <p><strong>PLACE:</strong> KOLLAM, KERALA</p>
+        <p><strong>EMAIL:</strong> <a href="mailto:nibinsaju007@gmail.com">nibinsaju007@gmail.com</a></p>
+        <div class="ad-contact-box">For ads, contact <strong>nibinsaju007@gmail.com</strong></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- SHOP DETAILS MODAL -->
+  <div id="shopDetailsModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close" onclick="hideShopModal()"><i class="fas fa-times"></i></button>
+      <h3 id="modalShopTitle" style="margin-bottom: 14px;">Shop Details</h3>
+      <div id="modalShopBody" style="font-size: 0.92rem; line-height: 1.8;"></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="bottom-nav hidden" id="bottomNav">
+    <button class="nav-item active" id="navProd" onclick="switchTab('FEED')"><i class="fas fa-boxes-stacked"></i><span>Products</span></button>
+    <button class="nav-item" id="navRules" onclick="switchTab('RULES')"><i class="fas fa-file-contract"></i><span>Rules</span></button>
+    <button class="nav-item" id="navSupp" onclick="switchTab('SUPPORT')"><i class="fas fa-headset"></i><span>Support</span></button>
+    <button class="nav-item" id="navDash" onclick="switchTab('DASH')"><i class="fas fa-id-card"></i><span>Dashboard</span></button>
+  </nav>
+
+  <script>
+    const INDIA_DATA = {
+      "Kerala": ["Ernakulam", "Thiruvananthapuram", "Kozhikode", "Thrissur", "Kottayam", "Palakkad", "Kollam", "Kannur", "Alappuzha", "Idukki", "Malappuram", "Wayanad", "Kasaragod", "Pathanamthitta"],
+      "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"], "Karnataka": ["Bengaluru Urban", "Mysuru"]
+    };
+    let currentUser = JSON.parse(localStorage.getItem('nexto_customer_user')) || null;
+    let products = JSON.parse(localStorage.getItem('nexto_products')) || [
+      { id: 'p1', shopName: 'Amaan Supermart', shopAddress: 'Edappally Toll, Cochin', shopPhone: '9847012345', pincode: '682024', district: 'Ernakulam', title: 'Tata Salt 1kg', about: 'Vacuum sealed salt pack.', mrp: 28, discountPrice: 14, expiryDate: '2026-10-30', frontPic: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&auto=format&fit=crop&q=60', backPic: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=400&auto=format&fit=crop&q=60' }
+    ];
+
+    window.onload = function() {
+      populateStates();
+      if (currentUser) {
+        setupFeed();
+      }
+    };
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark-mode');
+      const icon = document.getElementById('themeIcon');
+      icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    function populateStates() {
+      const sel = document.getElementById('custState');
+      if(sel) {
+        sel.innerHTML = '<option value="">Select State</option>';
+        Object.keys(INDIA_DATA).forEach(st => sel.innerHTML += `<option value="${st}">${st}</option>`);
+      }
+    }
+
+    function populateDistricts() {
+      const st = document.getElementById('custState').value;
+      const distSel = document.getElementById('custDistrict');
+      distSel.innerHTML = '<option value="">Select District</option>';
+      if (st && INDIA_DATA[st]) INDIA_DATA[st].forEach(d => distSel.innerHTML += `<option value="${d}">${d}</option>`);
+    }
+
+    function toggleTermsBtn() {
+      document.getElementById('acceptTermsBtn').disabled = !document.getElementById('termsCheckbox').checked;
+    }
+
+    function goToReg() { showScreen('custRegScreen'); }
+
+    function showScreen(screenId) {
+      ['termsScreen', 'custRegScreen', 'otpScreen', 'customerFeedScreen', 'rulesTabScreen', 'supportTabScreen', 'accountInfoScreen'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+      document.getElementById(screenId).classList.remove('hidden');
+    }
+
+    function handleRegSubmit(e) {
+      e.preventDefault();
+      window.tempCust = {
+        role: 'CUSTOMER',
+        name: document.getElementById('custName').value,
+        state: document.getElementById('custState').value,
+        district: document.getElementById('custDistrict').value,
+        place: document.getElementById('custPlace').value,
+        pincode: document.getElementById('custPincode').value,
+        phone: document.getElementById('custPhone').value,
+        email: document.getElementById('custEmail').value
+      };
+      showScreen('otpScreen');
+    }
+
+    function handleOtpSubmit(e) {
+      e.preventDefault();
+      if (document.getElementById('otpInput').value === '0005') {
+        currentUser = window.tempCust;
+        localStorage.setItem('nexto_customer_user', JSON.stringify(currentUser));
+        setupFeed();
+      } else {
+        alert('Invalid OTP! Use 0005');
+      }
+    }
+
+    function setupFeed() {
+      showScreen('customerFeedScreen');
+      document.getElementById('bottomNav').classList.remove('hidden');
+      document.getElementById('custFeedName').innerText = currentUser.name;
+      document.getElementById('custFeedLocation').innerText = `${currentUser.place}, ${currentUser.district} (${currentUser.pincode})`;
+
+      const grid = document.getElementById('customerProductGrid');
+      grid.innerHTML = '';
+      products.forEach(p => {
+        grid.innerHTML += `
+          <div class="product-card">
+            <div class="product-images">
+              <img src="${p.frontPic}" alt="Front"><img src="${p.backPic}" alt="Back">
+              <span class="image-label label-front">Front</span><span class="image-label label-back">Back</span>
+            </div>
+            <div class="product-body">
+              <div>
+                <div class="product-title">${p.title}</div>
+                <div class="product-desc">${p.about}</div>
+                <div class="price-row"><span class="discount-price">₹${p.discountPrice}</span><span class="mrp">MRP ₹${p.mrp}</span></div>
+                <div class="badge-expiry"><i class="fas fa-calendar"></i> Exp: ${p.expiryDate}</div>
+              </div>
+              <button class="btn btn-outline btn-sm" style="width:100%; margin-top:10px;" onclick="viewShop('${p.shopName}', '${p.shopAddress}', '${p.shopPhone}', '${p.pincode}', '${p.district}')"><i class="fas fa-store"></i> Shop Details</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function viewShop(name, address, phone, pin, district) {
+      document.getElementById('modalShopTitle').innerText = name;
+      document.getElementById('modalShopBody').innerHTML = `<p><strong>Address:</strong> ${address}, ${district} - ${pin}</p><p><strong>Contact:</strong> +91 ${phone}</p>`;
+      document.getElementById('shopDetailsModal').classList.remove('hidden');
+    }
+    function hideShopModal() { document.getElementById('shopDetailsModal').classList.add('hidden'); }
+
+    function switchTab(tab) {
+      ['navProd', 'navRules', 'navSupp', 'navDash'].forEach(id => document.getElementById(id).classList.remove('active'));
+      if(tab === 'FEED') { document.getElementById('navProd').classList.add('active'); showScreen('customerFeedScreen'); }
+      else if(tab === 'RULES') { document.getElementById('navRules').classList.add('active'); showScreen('rulesTabScreen'); }
+      else if(tab === 'SUPPORT') { document.getElementById('navSupp').classList.add('active'); showScreen('supportTabScreen'); }
+      else if(tab === 'DASH') {
+        document.getElementById('navDash').classList.add('active');
+        showScreen('accountInfoScreen');
+        document.getElementById('accountDetailsBody').innerHTML = `<p><strong>Name:</strong> ${currentUser.name}</p><p><strong>Phone:</strong> ${currentUser.phone}</p><p><strong>Location:</strong> ${currentUser.place}, ${currentUser.state} (${currentUser.pincode})</p><button class="btn btn-sm btn-outline" style="margin-top:14px;" onclick="logout()">Logout</button>`;
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('nexto_customer_user');
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXTO DEALS - Business Portal</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #f0f4f9; --bg-surface: #ffffff; --bg-card: #ffffff;
+      --text-main: #0f172a; --text-muted: #64748b; --border-color: #cbd5e1;
+      --primary: #2563eb; --accent-green: #059669; --accent-red: #dc2626; --accent-orange: #ea580c;
+      --shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.1); --border-radius: 18px;
+    }
+    body.dark-mode {
+      --bg-primary: #0b1329; --bg-surface: #131f37; --bg-card: #182642;
+      --text-main: #f1f5f9; --text-muted: #94a3b8; --border-color: #243452;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: var(--bg-primary); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 80px; }
+    header { background: var(--bg-surface); border-bottom: 1px solid var(--border-color); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .brand { font-size: 1.4rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .brand span { color: var(--accent-orange); }
+    .brand-subtext { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; display: block; }
+    main { flex: 1; max-width: 900px; width: 100%; margin: 0 auto; padding: 20px; }
+    .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--border-radius); padding: 24px; box-shadow: var(--shadow); margin-bottom: 24px; }
+    .screen-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+    .screen-title { font-size: 1.3rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+    .btn-back-link { background: none; border: none; color: var(--primary); font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .form-group { margin-bottom: 18px; text-align: left; }
+    .form-group label { display: block; font-size: 0.88rem; font-weight: 700; margin-bottom: 8px; color: var(--text-muted); }
+    .form-control { width: 100%; padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main); font-size: 0.98rem; outline: none; }
+    .btn { width: 100%; padding: 14px 20px; border-radius: 12px; border: none; font-weight: 700; font-size: 1.02rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent-orange) 0%, #c2410c 100%); color: white; }
+    .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
+    .btn-sm { padding: 8px 14px; font-size: 0.88rem; width: auto; border-radius: 8px; }
+    .btn-danger { background: var(--accent-red); color: white; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+    .product-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--border-radius); overflow: hidden; display: flex; flex-direction: column; }
+    .product-images { display: flex; height: 160px; background: #000; position: relative; }
+    .product-images img { width: 50%; height: 100%; object-fit: cover; }
+    .product-body { padding: 16px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .product-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 6px; }
+    .price-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+    .mrp { text-decoration: line-through; color: var(--text-muted); font-size: 0.88rem; }
+    .discount-price { font-size: 1.3rem; font-weight: 800; color: var(--accent-green); }
+    .badge-expiry { background: rgba(220, 38, 38, 0.12); color: var(--accent-red); font-size: 0.78rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+    .alert-box { padding: 14px; border-radius: 10px; font-size: 0.88rem; margin-bottom: 20px; display: flex; gap: 12px; align-items: flex-start; }
+    .alert-warning { background: rgba(234, 88, 12, 0.1); color: var(--accent-orange); border: 1px solid rgba(234, 88, 12, 0.25); }
+    .modal-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; z-index: 300; padding: 20px; }
+    .modal-content { background: var(--bg-card); border-radius: var(--border-radius); border: 1px solid var(--border-color); width: 100%; max-width: 500px; padding: 28px; position: relative; max-height: 90vh; overflow-y: auto; }
+    .modal-close { position: absolute; top: 18px; right: 18px; background: none; border: none; font-size: 1.3rem; color: var(--text-muted); cursor: pointer; }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-surface); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); background: none; border: none; font-size: 0.75rem; font-weight: 600; cursor: pointer; width: 33%; }
+    .nav-item.active { color: var(--accent-orange); font-weight: 800; }
+    .nav-item i { font-size: 1.25rem; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="brand">
+      <i class="fas fa-boxes-packing"></i>
+      <div>NEXTO <span>DEALS</span><span class="brand-subtext">Business Portal</span></div>
+    </a>
+    <button class="btn btn-outline btn-sm" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i></button>
+  </header>
+
+  <main>
+    <!-- 1. REGISTRATION FORM -->
+    <div id="businessRegScreen" class="card">
+      <div class="screen-header">
+        <div class="screen-title"><i class="fas fa-store" style="color:var(--accent-orange);"></i> Business Registration</div>
+        <a href="index.html" class="btn-back-link"><i class="fas fa-arrow-left"></i> Home</a>
+      </div>
+      <form onsubmit="handleBizReg(event)">
+        <div class="form-group"><label>Shop Name *</label><input type="text" id="bizShopName" class="form-control" required placeholder="Royal Supermarket"></div>
+        <div class="form-group"><label>Owner Name *</label><input type="text" id="bizOwnerName" class="form-control" required placeholder="K. V. Joseph"></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="form-group"><label>State *</label><select id="bizState" class="form-control" required onchange="populateDistricts()"><option value="">Select State</option></select></div>
+          <div class="form-group"><label>District *</label><select id="bizDistrict" class="form-control" required><option value="">Select District</option></select></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 14px;">
+          <div class="form-group"><label>Shop Address *</label><input type="text" id="bizAddress" class="form-control" required placeholder="Street, Landmark"></div>
+          <div class="form-group"><label>Pincode *</label><input type="text" id="bizPincode" class="form-control" required placeholder="682024"></div>
+        </div>
+        <div class="form-group"><label>Shop Category *</label><select id="bizCategory" class="form-control" required><option value="Grocery Store">Grocery Store</option><option value="Supermarket">Supermarket</option></select></div>
+        <div class="form-group"><label>Owner Mobile Number *</label><input type="tel" id="bizPhone" class="form-control" required placeholder="10-digit Number"></div>
+        <div class="form-group"><label>Membership Plan *</label><select id="bizPlan" class="form-control"><option value="Starter Plan">Starter Plan - ₹299/month</option></select></div>
+        <div class="form-group"><label>Upload FSSAI / Trade Licence *</label><input type="file" id="bizLicence" class="form-control" required></div>
+        <button type="submit" class="btn btn-primary">Submit Application & Verify <i class="fas fa-file-shield"></i></button>
+      </form>
+    </div>
+
+    <!-- 2. OTP SCREEN -->
+    <div id="bizOtpScreen" class="card hidden" style="text-align: center;">
+      <div class="screen-header">
+        <div class="screen-title">Security Verification</div>
+        <button class="btn-back-link" onclick="showScreen('businessRegScreen')"><i class="fas fa-arrow-left"></i> Back</button>
+      </div>
+      <p style="color: var(--text-muted); margin-bottom: 24px;">Enter OTP code (Secret OTP: 0005)</p>
+      <form onsubmit="handleBizOtp(event)">
+        <div class="form-group" style="max-width: 260px; margin: 0 auto 24px auto;">
+          <input type="text" id="bizOtpInput" class="form-control" style="text-align: center; font-size: 1.6rem; letter-spacing: 8px;" maxlength="4" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Verify Code</button>
+      </form>
+    </div>
+
+    <!-- 3. BUSINESS DASHBOARD -->
+    <div id="businessDashScreen" class="hidden">
+      <div class="card" style="padding: 16px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
+        <div><strong id="bizFeedShopName" style="font-size:1.05rem;">Shop Name</strong><div style="font-size: 0.8rem; color: var(--text-muted);" id="bizFeedLocation">Location</div></div>
+        <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
+      </div>
+
+      <div id="businessPendingAlert" class="card hidden" style="border-left: 5px solid var(--accent-orange);">
+        <h3><i class="fas fa-clock" style="color: var(--accent-orange);"></i> Licence Verification Pending</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 8px;">Your license is under review by Admin. Once approved, product upload will unlock.</p>
+      </div>
+
+      <div id="businessActivePanel" class="hidden">
+        <button class="btn btn-primary" style="margin-bottom: 20px;" onclick="showUploadModal()"><i class="fas fa-plus-circle"></i> Upload New Packaged Product</button>
+        <h3 style="font-size: 1.1rem; margin-bottom: 14px;">Your Listed Factory Products</h3>
+        <div id="businessProductGrid" class="product-grid"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ADD PRODUCT MODAL -->
+  <div id="addProductModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close" onclick="hideUploadModal()"><i class="fas fa-times"></i></button>
+      <h3 style="margin-bottom: 16px;"><i class="fas fa-box-open" style="color: var(--primary);"></i> Upload Product</h3>
+      <form onsubmit="handleProductUpload(event)">
+        <div class="form-group"><label>Product Name *</label><input type="text" id="prodTitle" class="form-control" required placeholder="Tata Salt 1kg"></div>
+        <div class="form-group"><label>About Product *</label><textarea id="prodAbout" class="form-control" rows="2" required placeholder="Factory sealed pack"></textarea></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group"><label>MRP (₹) *</label><input type="number" id="prodMrp" class="form-control" required placeholder="30"></div>
+          <div class="form-group"><label>Discount Price (₹) *</label><input type="number" id="prodDiscount" class="form-control" required placeholder="15"></div>
+        </div>
+        <div class="form-group"><label>Expiry Date *</label><input type="date" id="prodExpiry" class="form-control" required></div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Publish Listing</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const INDIA_DATA = {
+      "Kerala": ["Ernakulam", "Thiruvananthapuram", "Kozhikode", "Thrissur", "Kottayam", "Palakkad", "Kollam", "Kannur", "Alappuzha", "Idukki", "Malappuram", "Wayanad", "Kasaragod", "Pathanamthitta"],
+      "Tamil Nadu": ["Chennai", "Coimbatore"]
+    };
+    let currentBusiness = JSON.parse(localStorage.getItem('nexto_business_user')) || null;
+    let businesses = JSON.parse(localStorage.getItem('nexto_businesses')) || [];
+    let products = JSON.parse(localStorage.getItem('nexto_products')) || [];
+
+    window.onload = function() {
+      const stSel = document.getElementById('bizState');
+      if(stSel) {
+        stSel.innerHTML = '<option value="">Select State</option>';
+        Object.keys(INDIA_DATA).forEach(st => stSel.innerHTML += `<option value="${st}">${st}</option>`);
+      }
+      if (currentBusiness) setupDash();
+    };
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark-mode');
+      const icon = document.getElementById('themeIcon');
+      icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    function populateDistricts() {
+      const st = document.getElementById('bizState').value;
+      const dist = document.getElementById('bizDistrict');
+      dist.innerHTML = '<option value="">Select District</option>';
+      if (st && INDIA_DATA[st]) INDIA_DATA[st].forEach(d => dist.innerHTML += `<option value="${d}">${d}</option>`);
+    }
+
+    function showScreen(id) {
+      ['businessRegScreen', 'bizOtpScreen', 'businessDashScreen'].forEach(s => document.getElementById(s).classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function handleBizReg(e) {
+      e.preventDefault();
+      window.tempBiz = {
+        role: 'BUSINESS', id: 'biz_' + Date.now(),
+        shopName: document.getElementById('bizShopName').value,
+        ownerName: document.getElementById('bizOwnerName').value,
+        state: document.getElementById('bizState').value,
+        district: document.getElementById('bizDistrict').value,
+        address: document.getElementById('bizAddress').value,
+        pincode: document.getElementById('bizPincode').value,
+        category: document.getElementById('bizCategory').value,
+        phone: document.getElementById('bizPhone').value,
+        approved: false, licenceFile: 'licence.pdf'
+      };
+      showScreen('bizOtpScreen');
+    }
+
+    function handleBizOtp(e) {
+      e.preventDefault();
+      if(document.getElementById('bizOtpInput').value === '0005') {
+        currentBusiness = window.tempBiz;
+        businesses.push(currentBusiness);
+        localStorage.setItem('nexto_businesses', JSON.stringify(businesses));
+        localStorage.setItem('nexto_business_user', JSON.stringify(currentBusiness));
+        setupDash();
+      } else { alert('Invalid OTP! Use 0005'); }
+    }
+
+    function setupDash() {
+      showScreen('businessDashScreen');
+      const latestBiz = businesses.find(b => b.id === currentBusiness.id) || currentBusiness;
+      currentBusiness = latestBiz;
+
+      document.getElementById('bizFeedShopName').innerText = currentBusiness.shopName;
+      document.getElementById('bizFeedLocation').innerText = `${currentBusiness.district} (${currentBusiness.pincode})`;
+
+      if (!currentBusiness.approved) {
+        document.getElementById('businessPendingAlert').classList.remove('hidden');
+        document.getElementById('businessActivePanel').classList.add('hidden');
+      } else {
+        document.getElementById('businessPendingAlert').classList.add('hidden');
+        document.getElementById('businessActivePanel').classList.remove('hidden');
+        renderProducts();
+      }
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('businessProductGrid');
+      grid.innerHTML = '';
+      const myProds = products.filter(p => p.shopName === currentBusiness.shopName);
+      if(myProds.length === 0) {
+        grid.innerHTML = '<p style="color:var(--text-muted);">No factory products uploaded yet.</p>';
+        return;
+      }
+      myProds.forEach(p => {
+        grid.innerHTML += `
+          <div class="product-card">
+            <div class="product-images"><img src="${p.frontPic}" alt=""><img src="${p.backPic}" alt=""></div>
+            <div class="product-body">
+              <div>
+                <div class="product-title">${p.title}</div>
+                <div class="price-row"><span class="discount-price">₹${p.discountPrice}</span><span class="mrp">₹${p.mrp}</span></div>
+                <div class="badge-expiry">Exp: ${p.expiryDate}</div>
+              </div>
+              <button class="btn btn-danger btn-sm" onclick="delProd('${p.id}')">Remove</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function showUploadModal() { document.getElementById('addProductModal').classList.remove('hidden'); }
+    function hideUploadModal() { document.getElementById('addProductModal').classList.add('hidden'); }
+
+    function handleProductUpload(e) {
+      e.preventDefault();
+      const newP = {
+        id: 'p_' + Date.now(), shopName: currentBusiness.shopName,
+        shopAddress: currentBusiness.address, shopPhone: currentBusiness.phone,
+        pincode: currentBusiness.pincode, district: currentBusiness.district,
+        title: document.getElementById('prodTitle').value,
+        about: document.getElementById('prodAbout').value,
+        mrp: document.getElementById('prodMrp').value,
+        discountPrice: document.getElementById('prodDiscount').value,
+        expiryDate: document.getElementById('prodExpiry').value,
+        frontPic: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&auto=format&fit=crop&q=60',
+        backPic: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=400&auto=format&fit=crop&q=60'
+      };
+      products.unshift(newP);
+      localStorage.setItem('nexto_products', JSON.stringify(products));
+      hideUploadModal();
+      renderProducts();
+    }
+
+    function delProd(id) {
+      products = products.filter(p => p.id !== id);
+      localStorage.setItem('nexto_products', JSON.stringify(products));
+      renderProducts();
+    }
+
+    function logout() {
+      localStorage.removeItem('nexto_business_user');
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
